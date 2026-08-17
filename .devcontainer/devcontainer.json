@@ -1,0 +1,12 @@
+{
+  "name": "AI Mock Call Training",
+  "image": "mcr.microsoft.com/devcontainers/python:1-3.11-bookworm",
+  "postCreateCommand": "pip install -r requirements-web.txt",
+  "forwardPorts": [8000],
+  "portsAttributes": {
+    "8000": {
+      "label": "AI Mock Call Training",
+      "onAutoForward": "notify"
+    }
+  }
+}
