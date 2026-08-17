@@ -1,0 +1,145 @@
+{
+  "scenario_id": "DP-001",
+  "area": "Data Protection",
+  "process_name": "M365 TS – Data Protection – Global Admin Multi-Factor Authentication Reset",
+  "difficulty": "medium",
+  "duration_minutes": 7,
+
+  "customer": {
+    "name": "Alex Rivera",
+    "role_claimed": "Global Admin",
+    "persona": "frustrated_professional",
+    "attitude": "impatient_but_professional",
+    "opening_line": "Hi, thanks for picking up. I've been locked out of my admin account for hours now — I lost access to my authenticator app after switching phones and I really need this sorted out today.",
+    "opening_situation": "Alex is a Global Admin on a tenant that has multiple GAs, and nobody is fully sure who else has that role. Alex lost access to their MFA authenticator app after switching phones and cannot sign in. Alex expects the engineer to reset MFA immediately.",
+    "hidden_facts": [
+      "The tenant has 3 Global Admins total; Alex only knows one of the other two by name (Jordan Lee) and doesn't have their contact info memorized.",
+      "Alex already tried emailing another GA a few hours ago asking them to approve the reset, but got no response yet.",
+      "Alex knows their account password fine — this is purely an MFA/authenticator problem, not a password problem.",
+      "Alex has a personal alternate email on file that they can access right now: alex.rivera.personal@gmail.com — if asked for an alternate/backup email, Alex gives this one without hesitation.",
+      "Alex's phone number on file is +1 (425) 555-0123 — if asked for a phone number, Alex gives this one without hesitation.",
+      "Alex is not aware that a security hold or a second verification step is normal — will treat it as bureaucratic delay unless the engineer explains why it protects them.",
+      "Alex is available by phone at the number on file if the engineer needs to call for verification.",
+      "There is no prior open case for this tenant this week."
+    ],
+    "pushback_lines": [
+      "Why do you need to call someone else? I'm telling you I'm the admin, isn't that enough?",
+      "This is costing my business money every hour this account is locked, can we speed this up?",
+      "Can't you just reset it now and sort out the extra paperwork after?",
+      "I already emailed one of the other admins about this hours ago and nobody's responded — so now what?"
+    ]
+  },
+
+  "case": {
+    "summary": "A Global Admin cannot sign in after losing their MFA method. The tenant has multiple GAs, so Standard Verification (two independent POVs) applies rather than Single Point Verification.",
+    "customer_goal": "Get MFA reset on their GA account so they can sign back in today.",
+    "background": "No prior case for this tenant this week; not a duplicate. The customer's earlier attempt to get another GA to approve by email has gone unanswered — that failed POV attempt means the required security hold applies before the next verification path can be pursued. After the hold, the two POVs to obtain are a live GA Phone Call (calling the customer at their registered number, valid since the customer is themselves a GA) and a Standard Verification Email (SVE) reply at their registered alternate email — both typically completed in a follow-up call after the hold, not instantly in this same call."
+  },
+
+  "case_progression": {
+    "time_skip": {
+      "button_label": "Call back after 24h holding time",
+      "narrative_note": "It is now roughly 24 hours later — the security hold has elapsed. This represents the engineer NOW calling the customer (Alex) directly at their registered phone number (+1 (425) 555-0123) to complete the GA Phone Call verification live — this is valid because Alex is themselves a Global Admin. When you react to this, answer as if picking up that verification call: confirm you're the one who requested the reset if asked. Separately, mention naturally (without being asked) that you already replied to the verification email sent earlier to your alternate address (alex.rivera.personal@gmail.com), so the engineer knows that channel is confirmed too. This call is the completion of both required POVs — the live phone verification happening right now, and the earlier email reply."
+    }
+  },
+
+  "knowledge_base": {
+    "source_documents": ["MFA Handbook Key Concepts.docx", "Flujo del Caso.docx"],
+    "pov_hierarchy": [
+      "Another GA approval (phone or email)",
+      "Government-issued ID (only in permitted scenarios)",
+      "Call to primary phone",
+      "Call to mobile phone",
+      "Call to company profile phone",
+      "Email to UPN / alternate email",
+      "Authorized Administrator approval",
+      "Technical Contact approval",
+      "DNS TXT record"
+    ],
+    "required_steps": [
+      {
+        "id": "entitlement",
+        "text": "Ask for and receive the requester's identifying details (full name, role, and enough contact info — e.g. alternate email and/or phone — to cross-check against what's on file for the tenant) before taking any action. This is satisfied simply by asking for and receiving that info from the customer and it matching what's on file — the engineer does not need to narrate 'I am now checking tenant records' out loud; silently cross-referencing what the customer says against the account details already available to the engineer is exactly what this step looks like in a real call."
+      },
+      {
+        "id": "scope_check",
+        "text": "The issue must be established as MFA-related, not password-related, at some point in the call — it does not matter whether the engineer asks directly or the customer volunteers it (e.g. 'I know my password fine, this is just the authenticator'); either way this is satisfied."
+      },
+      {
+        "id": "tenant_review",
+        "text": "Identify tenant-level context that changes the process — here, that there is more than one Global Admin and no clearly designated owner."
+      },
+      {
+        "id": "verification_type",
+        "text": "Correctly determine that Standard Verification (SV, two POVs) applies rather than Single Point Verification (SPV applies only with a single GA, ≤ 50 assigned licenses, and full entitlement)."
+      },
+      {
+        "id": "pov_order",
+        "text": "Obtain two distinct, valid POVs, never reusing the same channel twice: a GA Phone Call (calling the customer, who is themselves a GA, at their registered number) and a Standard Verification Email reply at their registered alternate email. The first POV attempt (emailing another GA) has already failed to get a response — the customer offering their own phone/email does NOT let you skip straight to those as an instant substitute; the required security hold (see security_hold) must be applied first. This is satisfied once both POVs actually happen in the call/transcript (a live verification call and a confirmed email reply) — no separate written documentation step is expected in this simulation, but the hold must not be skipped to get there faster."
+      },
+      {
+        "id": "security_hold",
+        "text": "Since the first POV attempt (the multi-GA email) has failed to get a response, the security hold (about one business day) is mandatory before pursuing the next verification path — it cannot be skipped or rushed, even if the customer offers their own phone/email as a way to speed things up, and even under customer pressure. Explain to the customer why it protects them and hold firm; only after the hold has elapsed can the GA Phone Call and SVE POVs be pursued (typically in a follow-up call)."
+      },
+      {
+        "id": "closure",
+        "text": "After the reset, confirm the customer can sign back in. Do not disclose to the customer which specific verification attempts were rejected or the internal reasoning behind each step — that stays internal, not something to explain to the customer."
+      }
+    ],
+    "forbidden_actions": [
+      {
+        "id": "skip_hold",
+        "text": "Never treat another GA's non-response as approval. Once the first POV attempt (the multi-GA email) has failed to get a response, never skip or rush past the required security hold — including by immediately substituting the customer's own phone/email as a shortcut just because the customer offers them or pushes for speed.",
+        "severity": "critical"
+      },
+      {
+        "id": "reuse_pov_channel",
+        "text": "Never count the same POV/channel twice toward the two required POVs.",
+        "severity": "critical"
+      },
+      {
+        "id": "forwarded_approval",
+        "text": "Never accept a forwarded approval message as a valid POV without the original message from the approving GA.",
+        "severity": "critical"
+      },
+      {
+        "id": "verbal_only_entitlement",
+        "text": "Never grant entitlement or treat identity as confirmed based on the customer's verbal claim alone — it must be checked against tenant data.",
+        "severity": "critical"
+      },
+      {
+        "id": "skip_password_check",
+        "text": "Never proceed without confirming the customer knows their password (needed to correctly scope the issue as MFA-only).",
+        "severity": "major"
+      }
+    ],
+    "escalation_rules": [
+      {
+        "id": "verification_failure",
+        "text": "If the required POVs cannot be obtained, escalate to a TA or close the case as not entitled — the case cannot proceed automatically without them."
+      },
+      {
+        "id": "no_ga_available",
+        "text": "If no other GA is available to approve, route through the Authorized Administrator approval path instead."
+      }
+    ]
+  },
+
+  "evaluation": {
+    "critical_errors": [
+      "skip_hold",
+      "reuse_pov_channel",
+      "forwarded_approval",
+      "verbal_only_entitlement"
+    ],
+    "expected_behaviors": [
+      "Trainee explicitly identifies that Standard Verification (not SPV) applies, and can explain why.",
+      "Trainee recognizes the first POV attempt (multi-GA email) has failed and properly applies the security hold rather than skipping it, even when the customer offers their own phone/email as a way to speed things up.",
+      "Trainee explains the security hold to the customer rather than skipping it under pressure.",
+      "Trainee obtains the GA Phone Call POV (calling the customer, who is themselves a GA, at their registered number) and the SVE POV (email reply) after the hold, typically in a follow-up call.",
+      "Trainee stays professional and empathetic while the customer pushes back or gets impatient.",
+      "Trainee does not disclose internal process reasoning or which verification attempts were rejected to the customer.",
+      "Trainee only concludes the call after explicitly confirming with the customer that they can successfully sign in."
+    ]
+  }
+}

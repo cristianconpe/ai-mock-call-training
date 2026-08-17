@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>AI Mock Call Training</title>
+<link rel="stylesheet" href="/assets/styles.css" />
+</head>
+<body>
+<div id="app">
+
+  <section id="view-picker" class="view">
+    <h1>AI Support Call Training</h1>
+    <p class="subtitle">Practice a live mock call with an AI customer.</p>
+    <div id="scenario-list" class="scenario-list"></div>
+  </section>
+
+  <section id="view-call" class="view" hidden>
+    <div class="call-header">
+      <div>
+        <div class="scenario-name" id="call-scenario-name"></div>
+        <div class="scenario-meta" id="call-scenario-meta"></div>
+      </div>
+      <div class="timer" id="call-timer">05:00</div>
+    </div>
+
+    <div class="live-indicator">
+      <span class="live-dot"></span> LIVE CALL
+    </div>
+
+    <div class="status-line" id="call-status">Connecting…</div>
+
+    <div class="transcript" id="transcript"></div>
+
+    <div class="controls">
+      <button id="talk-btn" class="talk-btn" disabled>
+        <span id="talk-btn-label">Hold to Talk</span>
+      </button>
+      <button id="time-skip-btn" class="skip-btn" hidden>Skip ahead</button>
+      <button id="end-call-btn" class="end-btn">End Call</button>
+    </div>
+  </section>
+
+  <section id="view-eval" class="view" hidden>
+    <h1>Call Complete</h1>
+    <div class="eval-score" id="eval-score">--/100</div>
+    <div class="eval-stars" id="eval-stars"></div>
+    <div class="eval-band" id="eval-band"></div>
+    <div class="eval-recommendation" id="eval-recommendation"></div>
+
+    <div class="eval-categories" id="eval-categories"></div>
+
+    <div class="eval-columns">
+      <div class="eval-col">
+        <h3>What you did well</h3>
+        <ul id="eval-strengths"></ul>
+      </div>
+      <div class="eval-col">
+        <h3>Areas to improve</h3>
+        <ul id="eval-improvements"></ul>
+      </div>
+    </div>
+
+    <div class="eval-errors" id="eval-errors"></div>
+
+    <button id="retry-btn" class="talk-btn start">Practice Again</button>
+  </section>
+
+</div>
+<script src="/assets/call.js"></script>
+</body>
+</html>
