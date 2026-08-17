@@ -46,11 +46,15 @@ SCENARIOS_DIR = BASE_DIR / "scenarios"
 
 
 def _require_env(name: str) -> str:
-    value = os.environ.get(name)
+    # .strip() guards against stray whitespace/newlines that sneak in when
+    # a value is copy-pasted into a Codespaces/CI secret field — a trailing
+    # "\n" in a URL otherwise breaks httpx's URL parser with a confusing error.
+    value = os.environ.get(name, "").strip()
     if not value:
         raise RuntimeError(
             f"Missing required environment variable: {name}. "
-            f"Copy .env.example to .env and fill in your real Azure AI Foundry values."
+            f"Copy .env.example to .env and fill in your real Azure AI Foundry values "
+            f"(or set it as a Codespaces secret)."
         )
     return value
 
