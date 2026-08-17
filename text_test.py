@@ -38,7 +38,9 @@ load_dotenv()
 
 
 def _require_env(name: str) -> str:
-    value = os.environ.get(name)
+    # .strip() guards against stray whitespace/newlines from a copy-pasted
+    # secret value, which otherwise breaks httpx's URL parser.
+    value = os.environ.get(name, "").strip()
     if not value:
         raise RuntimeError(
             f"Missing required environment variable: {name}. "
@@ -47,9 +49,9 @@ def _require_env(name: str) -> str:
     return value
 
 
-GPT_MODEL = os.environ.get("GPT_MODEL", "gpt-5-mini")
-WHISPER_MODEL = os.environ.get("WHISPER_MODEL", "whisper")
-TTS_MODEL = os.environ.get("TTS_MODEL", "tts-hd")
+GPT_MODEL = os.environ.get("GPT_MODEL", "gpt-5-mini").strip()
+WHISPER_MODEL = os.environ.get("WHISPER_MODEL", "whisper").strip()
+TTS_MODEL = os.environ.get("TTS_MODEL", "tts-hd").strip()
 
 gpt_client = AzureOpenAI(
     api_version="2024-10-21",

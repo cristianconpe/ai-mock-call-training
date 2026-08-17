@@ -59,10 +59,10 @@ def _require_env(name: str) -> str:
     return value
 
 
-GPT_MODEL = os.environ.get("GPT_MODEL", "gpt-5-mini")
-WHISPER_MODEL = os.environ.get("WHISPER_MODEL", "whisper")
-TTS_MODEL = os.environ.get("TTS_MODEL", "tts-hd")
-TTS_VOICE = os.environ.get("TTS_VOICE", "alloy")
+GPT_MODEL = os.environ.get("GPT_MODEL", "gpt-5-mini").strip()
+WHISPER_MODEL = os.environ.get("WHISPER_MODEL", "whisper").strip()
+TTS_MODEL = os.environ.get("TTS_MODEL", "tts-hd").strip()
+TTS_VOICE = os.environ.get("TTS_VOICE", "alloy").strip()
 
 gpt_client = AzureOpenAI(
     api_version="2024-10-21",
