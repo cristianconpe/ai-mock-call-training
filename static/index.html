@@ -3,157 +3,70 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>AI Call Training</title>
+<title>AI Mock Call Training</title>
 <link rel="stylesheet" href="/assets/styles.css" />
 </head>
 <body>
 <div id="app">
 
-  <!-- ============ SCENARIO OVERVIEW / PICKER ============ -->
   <section id="view-picker" class="view">
-    <header class="brand-bar">
-      <span class="brand-mark" aria-hidden="true">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 2a7 7 0 0 0-7 7v3.6c0 .5-.2 1-.6 1.4L3 15.5c-.7.7-.2 2 .8 2h2.7a5 5 0 0 0 9.9 0h2.7c1 0 1.5-1.3.8-2l-1.4-1.5a2 2 0 0 1-.5-1.4V9a7 7 0 0 0-7-7Zm-2 15.5a3 3 0 0 0 4 0 3 3 0 0 1-4 0Z" fill="currentColor"/></svg>
-      </span>
-      <span class="brand-name">AI Call Training</span>
-    </header>
-
-    <div class="page-intro">
-      <h1>Practice Center</h1>
-      <p class="subtitle">Practice real-world customer interactions in a safe environment.</p>
-    </div>
-
+    <h1>AI Support Call Training</h1>
+    <p class="subtitle">Practice a live mock call with an AI customer.</p>
     <div id="scenario-list" class="scenario-list"></div>
   </section>
 
-  <!-- ============ LIVE CALL ============ -->
   <section id="view-call" class="view" hidden>
-    <div class="call-topbar">
-      <div class="topbar-brand">
-        <span class="brand-mark small" aria-hidden="true">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M12 2a7 7 0 0 0-7 7v3.6c0 .5-.2 1-.6 1.4L3 15.5c-.7.7-.2 2 .8 2h2.7a5 5 0 0 0 9.9 0h2.7c1 0 1.5-1.3.8-2l-1.4-1.5a2 2 0 0 1-.5-1.4V9a7 7 0 0 0-7-7Zm-2 15.5a3 3 0 0 0 4 0 3 3 0 0 1-4 0Z" fill="currentColor"/></svg>
-        </span>
-        AI Call Training
-      </div>
-      <div class="topbar-timer" id="call-timer">05:00</div>
-      <div class="topbar-scenario">
+    <div class="call-header">
+      <div>
         <div class="scenario-name" id="call-scenario-name"></div>
         <div class="scenario-meta" id="call-scenario-meta"></div>
       </div>
+      <div class="timer" id="call-timer">05:00</div>
     </div>
 
-    <div class="live-indicator"><span class="live-dot"></span> LIVE CALL</div>
-
-    <div class="call-stage">
-      <div class="customer-visual" id="customer-visual">
-        <span class="visual-ring ring-outer" aria-hidden="true"></span>
-        <span class="visual-ring ring-inner" aria-hidden="true"></span>
-        <svg class="visual-icon" width="40" height="40" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-          <circle cx="12" cy="8" r="4" fill="currentColor"/>
-          <path d="M4 20c0-4.4 3.6-7 8-7s8 2.6 8 7" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-        </svg>
-        <span class="visual-waveform" id="visual-waveform" aria-hidden="true">
-          <i></i><i></i><i></i><i></i><i></i>
-        </span>
-      </div>
-      <div class="call-state-text" id="call-status">Connecting…</div>
-      <div class="call-state-subtext" id="call-substatus">Setting up your call…</div>
+    <div class="live-indicator">
+      <span class="live-dot"></span> LIVE CALL
     </div>
+
+    <div class="status-line" id="call-status">Connecting…</div>
 
     <div class="transcript" id="transcript"></div>
 
-    <div class="call-controls">
-      <button id="talk-btn" class="mic-btn" disabled>
-        <svg class="mic-icon" width="30" height="30" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-          <rect x="9" y="2" width="6" height="12" rx="3" fill="currentColor"/>
-          <path d="M5 11a7 7 0 0 0 14 0" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-          <path d="M12 18v3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-        </svg>
-        <span id="talk-btn-label">Click to Talk</span>
+    <div class="controls">
+      <button id="talk-btn" class="talk-btn" disabled>
+        <span id="talk-btn-label">Hold to Talk</span>
       </button>
-
-      <div class="secondary-controls">
-        <button id="time-skip-btn" class="skip-btn" hidden>Skip ahead</button>
-        <button id="end-call-btn" class="end-btn">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M21 16.4v2.3a1.3 1.3 0 0 1-1.4 1.3 17.6 17.6 0 0 1-7.6-2.7 17.4 17.4 0 0 1-5.3-5.3A17.6 17.6 0 0 1 4 4.4 1.3 1.3 0 0 1 5.3 3h2.3a1.3 1.3 0 0 1 1.3 1.1c.1.9.3 1.8.6 2.6a1.3 1.3 0 0 1-.3 1.4L8 9.3a14 14 0 0 0 5.3 5.3l1.2-1.2a1.3 1.3 0 0 1 1.4-.3c.8.3 1.7.5 2.6.6a1.3 1.3 0 0 1 1.1 1.3Z" stroke="currentColor" stroke-width="1.6"/></svg>
-          End Call
-        </button>
-      </div>
+      <button id="time-skip-btn" class="skip-btn" hidden>Skip ahead</button>
+      <button id="end-call-btn" class="end-btn">End Call</button>
     </div>
-
-    <p class="call-tip">Tip: be professional, follow the process, and keep the customer informed.</p>
   </section>
 
-  <!-- ============ CALL COMPLETE / EVALUATION ============ -->
   <section id="view-eval" class="view" hidden>
-    <div class="eval-hero">
-      <div class="score-ring-wrap">
-        <svg class="score-ring" viewBox="0 0 160 160" width="160" height="160">
-          <circle class="ring-track" cx="80" cy="80" r="70"></circle>
-          <circle class="ring-fill" id="score-ring-fill" cx="80" cy="80" r="70"></circle>
-        </svg>
-        <div class="score-ring-value">
-          <span class="score-number" id="eval-score-number">0</span>
-          <span class="score-max">/ 100</span>
-        </div>
-      </div>
-      <div class="eval-hero-info">
-        <div class="eval-band" id="eval-band">—</div>
-        <div class="eval-stars-row">
-          <span class="eval-stars" id="eval-stars"></span>
-          <span class="eval-stars-label" id="eval-stars-label">Customer Experience</span>
-        </div>
-      </div>
-    </div>
+    <h1>Call Complete</h1>
+    <div class="eval-score" id="eval-score">--/100</div>
+    <div class="eval-stars" id="eval-stars"></div>
+    <div class="eval-band" id="eval-band"></div>
+    <div class="eval-recommendation" id="eval-recommendation"></div>
 
     <div class="eval-categories" id="eval-categories"></div>
 
-    <div class="eval-feedback-grid">
-      <div class="feedback-col well">
-        <h3>
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="10" fill="currentColor" opacity="0.15"/><path d="M8 12.5l2.5 2.5L16 9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          What you did well
-        </h3>
+    <div class="eval-columns">
+      <div class="eval-col">
+        <h3>What you did well</h3>
         <ul id="eval-strengths"></ul>
       </div>
-      <div class="feedback-col improve">
-        <h3>
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="10" fill="currentColor" opacity="0.15"/><path d="M8 15l3-3 2.5 2.5L17 10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M17 13.5V10h-3.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          Areas to improve
-        </h3>
+      <div class="eval-col">
+        <h3>Areas to improve</h3>
         <ul id="eval-improvements"></ul>
       </div>
     </div>
 
-    <div class="eval-errors" id="eval-errors" hidden></div>
+    <div class="eval-errors" id="eval-errors"></div>
 
-    <div class="eval-practice-tip">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2l2.6 5.9L21 9l-4.5 4.4L17.6 20 12 16.8 6.4 20l1.1-6.6L3 9l6.4-1.1L12 2z" fill="currentColor"/></svg>
-      <div>
-        <div class="tip-label">Recommended practice</div>
-        <div class="tip-text" id="eval-recommendation"></div>
-      </div>
-    </div>
-
-    <div class="eval-actions">
-      <button id="transcript-btn" class="btn-secondary">View Transcript</button>
-      <button id="retry-btn" class="btn-primary">Practice Again</button>
-      <button id="back-btn" class="btn-secondary">Back to Scenarios</button>
-    </div>
+    <button id="retry-btn" class="talk-btn start">Practice Again</button>
   </section>
 
 </div>
-
-<div class="modal-backdrop" id="transcript-modal" hidden>
-  <div class="modal-panel">
-    <div class="modal-header">
-      <h3>Call Transcript</h3>
-      <button id="transcript-close-btn" class="modal-close" aria-label="Close">✕</button>
-    </div>
-    <div class="modal-body" id="transcript-modal-body"></div>
-  </div>
-</div>
-
 <script src="/assets/call.js"></script>
 </body>
 </html>
