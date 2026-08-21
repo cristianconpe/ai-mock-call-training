@@ -42,8 +42,10 @@ machine with audio hardware.
    dev container and runs `pip install -r requirements-web.txt` automatically.
 3. In the codespace terminal:
    ```bash
-   python -m uvicorn web_app:app --reload --port 8000 --ws-ping-timeout 120
+   python -m uvicorn web_app:app --reload --host 0.0.0.0 --port 8000 --ws-ping-timeout 120
    ```
+   `--host 0.0.0.0` is required in Codespaces — uvicorn's default (`127.0.0.1`) only accepts
+   connections from inside the container, so the forwarded URL resolves to nothing without it.
 4. VS Code will prompt to forward port 8000 — open it in the browser (**Ports** tab → globe icon).
    Codespaces serves forwarded ports over HTTPS, so mic access works the same as on `localhost`.
 
