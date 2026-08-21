@@ -3,32 +3,27 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>AI Mock Call Training</title>
+<title>AI Call Training</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/assets/styles.css" />
 </head>
 <body>
-<div class="bg-decor" aria-hidden="true">
-  <span class="decor-blob blob-1"></span>
-  <span class="decor-blob blob-2"></span>
-  <span class="decor-dot dot-1"></span>
-  <span class="decor-dot dot-2"></span>
-  <span class="decor-dot dot-3"></span>
-  <span class="decor-plus plus-1">+</span>
-  <span class="decor-plus plus-2">+</span>
-</div>
-
 <div id="app">
 
   <!-- ============ START CALL ============ -->
   <section id="view-picker" class="view">
     <header class="brand-bar">
       <span class="brand-mark" aria-hidden="true">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 2a7 7 0 0 0-7 7v3.6c0 .5-.2 1-.6 1.4L3 15.5c-.7.7-.2 2 .8 2h2.7a5 5 0 0 0 9.9 0h2.7c1 0 1.5-1.3.8-2l-1.4-1.5a2 2 0 0 1-.5-1.4V9a7 7 0 0 0-7-7Zm-2 15.5a3 3 0 0 0 4 0 3 3 0 0 1-4 0Z" fill="currentColor"/></svg>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+          <path d="M4 13v-1a8 8 0 0 1 16 0v1" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+          <rect x="2.5" y="12" width="4" height="7" rx="2" fill="currentColor"/>
+          <rect x="17.5" y="12" width="4" height="7" rx="2" fill="currentColor"/>
+          <path d="M19.5 19v1a3 3 0 0 1-3 3h-3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+        </svg>
       </span>
-      <span class="brand-name">AI Mock Call Training</span>
+      <span class="brand-name">AI Call Training</span>
     </header>
 
     <div class="page-intro">
@@ -41,67 +36,58 @@
 
   <!-- ============ LIVE CALL ============ -->
   <section id="view-call" class="view" hidden>
-    <header class="brand-bar">
-      <span class="brand-mark" aria-hidden="true">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 2a7 7 0 0 0-7 7v3.6c0 .5-.2 1-.6 1.4L3 15.5c-.7.7-.2 2 .8 2h2.7a5 5 0 0 0 9.9 0h2.7c1 0 1.5-1.3.8-2l-1.4-1.5a2 2 0 0 1-.5-1.4V9a7 7 0 0 0-7-7Zm-2 15.5a3 3 0 0 0 4 0 3 3 0 0 1-4 0Z" fill="currentColor"/></svg>
-      </span>
-      <span class="brand-name">AI Mock Call Training</span>
+    <header class="call-topbar">
+      <button id="leave-call-btn" class="leave-link">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M15 6l-6 6 6 6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Leave Call
+      </button>
       <span class="timer-badge" id="call-timer">05:00</span>
+      <div class="call-scenario-tag">
+        <span class="call-scenario-name" id="call-scenario-name"></span>
+        <span class="difficulty-pill" id="call-scenario-meta"></span>
+      </div>
     </header>
 
-    <div class="scenario-info-card">
-      <div class="scenario-info-top">
-        <div>
-          <div class="scenario-name" id="call-scenario-name"></div>
-          <div class="scenario-meta" id="call-scenario-meta"></div>
-        </div>
+    <div class="call-stage">
+      <div class="customer-visual" id="customer-visual">
+        <span class="visual-ring ring-outer" aria-hidden="true"></span>
+        <span class="visual-ring ring-inner" aria-hidden="true"></span>
+        <svg class="visual-icon" width="40" height="40" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <circle cx="12" cy="8" r="4" fill="currentColor"/>
+          <path d="M4 20c0-4.4 3.6-7 8-7s8 2.6 8 7" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+        <span class="visual-waveform" id="visual-waveform" aria-hidden="true">
+          <i></i><i></i><i></i><i></i><i></i>
+        </span>
       </div>
-      <div class="scenario-info-divider"></div>
-      <div class="live-indicator"><span class="live-dot"></span> LIVE CALL</div>
-    </div>
-
-    <div class="call-main">
-      <div class="conversation-card">
-        <div class="conversation-header">Customer</div>
-        <div class="transcript" id="transcript"></div>
+      <div class="call-status-text">
         <div class="call-state-text" id="call-status">Connecting…</div>
-      </div>
-
-      <div class="customer-visual-card">
-        <div class="customer-visual" id="customer-visual">
-          <span class="visual-ring ring-outer" aria-hidden="true"></span>
-          <span class="visual-ring ring-inner" aria-hidden="true"></span>
-          <svg class="visual-icon" width="34" height="34" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-            <circle cx="12" cy="8" r="4" fill="currentColor"/>
-            <path d="M4 20c0-4.4 3.6-7 8-7s8 2.6 8 7" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-          </svg>
-          <span class="visual-waveform" id="visual-waveform" aria-hidden="true">
-            <i></i><i></i><i></i><i></i><i></i>
-          </span>
-        </div>
-        <p class="call-state-subtext" id="call-substatus">Listen carefully and respond naturally.</p>
+        <p class="call-state-subtext" id="call-substatus">Setting up your call…</p>
       </div>
     </div>
 
     <div class="call-controls">
-      <button id="talk-btn" class="talk-btn" disabled>
-        <svg class="mic-icon" width="26" height="26" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-          <rect x="9" y="2" width="6" height="12" rx="3" fill="currentColor"/>
-          <path d="M5 11a7 7 0 0 0 14 0" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-          <path d="M12 18v3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-        </svg>
-        <span id="talk-btn-label">Hold to Talk</span>
-      </button>
-
       <button id="time-skip-btn" class="skip-btn" hidden>
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.6"/><path d="M12 7v5l3.5 2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
         Skip ahead
       </button>
 
-      <button id="end-call-btn" class="end-btn">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M21 16.4v2.3a1.3 1.3 0 0 1-1.4 1.3 17.6 17.6 0 0 1-7.6-2.7 17.4 17.4 0 0 1-5.3-5.3A17.6 17.6 0 0 1 4 4.4 1.3 1.3 0 0 1 5.3 3h2.3a1.3 1.3 0 0 1 1.3 1.1c.1.9.3 1.8.6 2.6a1.3 1.3 0 0 1-.3 1.4L8 9.3a14 14 0 0 0 5.3 5.3l1.2-1.2a1.3 1.3 0 0 1 1.4-.3c.8.3 1.7.5 2.6.6a1.3 1.3 0 0 1 1.1 1.3Z" stroke="currentColor" stroke-width="1.6"/></svg>
-        End Call
-      </button>
+      <div class="action-bar">
+        <button id="talk-btn" class="talk-btn" disabled>
+          <svg class="mic-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <rect x="9" y="2" width="6" height="12" rx="3" fill="currentColor"/>
+            <path d="M5 11a7 7 0 0 0 14 0" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            <path d="M12 18v3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+          <span id="talk-btn-label">Hold to Talk</span>
+        </button>
+
+        <button id="end-call-btn" class="end-btn" aria-label="End Call">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M21 16.4v2.3a1.3 1.3 0 0 1-1.4 1.3 17.6 17.6 0 0 1-7.6-2.7 17.4 17.4 0 0 1-5.3-5.3A17.6 17.6 0 0 1 4 4.4 1.3 1.3 0 0 1 5.3 3h2.3a1.3 1.3 0 0 1 1.3 1.1c.1.9.3 1.8.6 2.6a1.3 1.3 0 0 1-.3 1.4L8 9.3a14 14 0 0 0 5.3 5.3l1.2-1.2a1.3 1.3 0 0 1 1.4-.3c.8.3 1.7.5 2.6.6a1.3 1.3 0 0 1 1.1 1.3Z" fill="currentColor"/></svg>
+        </button>
+      </div>
+
+      <p class="call-tip">✨ Tip: Be professional, follow the process, and make the customer happy!</p>
     </div>
   </section>
 
@@ -109,12 +95,17 @@
   <section id="view-eval" class="view" hidden>
     <header class="brand-bar">
       <span class="brand-mark" aria-hidden="true">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 2a7 7 0 0 0-7 7v3.6c0 .5-.2 1-.6 1.4L3 15.5c-.7.7-.2 2 .8 2h2.7a5 5 0 0 0 9.9 0h2.7c1 0 1.5-1.3.8-2l-1.4-1.5a2 2 0 0 1-.5-1.4V9a7 7 0 0 0-7-7Zm-2 15.5a3 3 0 0 0 4 0 3 3 0 0 1-4 0Z" fill="currentColor"/></svg>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+          <path d="M4 13v-1a8 8 0 0 1 16 0v1" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+          <rect x="2.5" y="12" width="4" height="7" rx="2" fill="currentColor"/>
+          <rect x="17.5" y="12" width="4" height="7" rx="2" fill="currentColor"/>
+          <path d="M19.5 19v1a3 3 0 0 1-3 3h-3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+        </svg>
       </span>
-      <span class="brand-name">AI Mock Call Training</span>
+      <span class="brand-name">AI Call Training</span>
       <button id="retry-btn-header" class="header-action-btn">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 12a8 8 0 1 1 2.7 6M4 12V6m0 6h6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        Practice Again
+        <span>Practice Again</span>
       </button>
     </header>
 

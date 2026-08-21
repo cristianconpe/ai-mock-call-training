@@ -21,24 +21,40 @@ async function loadScenarios() {
   const list = el('scenario-list');
   list.innerHTML = '';
   scenarios.forEach((s) => {
-    const card = document.createElement('div');
-    card.className = 'scenario-card';
-    card.innerHTML = `
-      <div class="scenario-icon" aria-hidden="true">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M12 3l7 3v5c0 4.6-3 8.4-7 9.6-4-1.2-7-5-7-9.6V6l7-3Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M9 12l2 2 4-4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      </div>
-      <div class="info">
-        <h2>${escapeHtml(s.area)} &mdash; ${escapeHtml(s.scenario_id)}</h2>
-        <p>${escapeHtml(s.process_name)}</p>
-        <p class="scenario-diff-line">Difficulty: ${escapeHtml(s.difficulty)} &middot; ${s.duration_minutes} min</p>
+    const block = document.createElement('div');
+    block.className = 'scenario-block';
+    block.innerHTML = `
+      <div class="scenario-grid">
+        <div class="scenario-summary-card">
+          <div class="scenario-icon" aria-hidden="true">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none"><path d="M12 3l7 3v5c0 4.6-3 8.4-7 9.6-4-1.2-7-5-7-9.6V6l7-3Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M9 12l2 2 4-4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <h2>${escapeHtml(s.area)} &mdash; ${escapeHtml(s.scenario_id)}</h2>
+          <p class="scenario-subtitle">${escapeHtml(s.process_name)}</p>
+          <div class="badge-row">
+            <span class="badge badge-difficulty">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="3" y="14" width="4" height="7" rx="1" fill="currentColor"/><rect x="10" y="9" width="4" height="12" rx="1" fill="currentColor"/><rect x="17" y="4" width="4" height="17" rx="1" fill="currentColor"/></svg>
+              ${escapeHtml(s.difficulty)}
+            </span>
+            <span class="badge badge-duration">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.6"/><path d="M12 7v5l3.5 2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+              ${s.duration_minutes} min
+            </span>
+          </div>
+        </div>
+        <div class="scenario-overview-card">
+          ${s.overview ? `<h3>Scenario overview</h3><p>${escapeHtml(s.overview)}</p>` : ''}
+          ${s.goal ? `<h3>Your goal</h3><p>${escapeHtml(s.goal)}</p>` : ''}
+        </div>
       </div>
       <button class="start-call-btn">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6.6 10.8a13.6 13.6 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1-.25c1.1.36 2.3.56 3.5.56a1 1 0 0 1 1 1V20a1 1 0 0 1-1 1C10.9 21 3 13.1 3 3.5a1 1 0 0 1 1-1H7.5a1 1 0 0 1 1 1c0 1.2.2 2.4.56 3.5a1 1 0 0 1-.25 1L6.6 10.8Z" fill="currentColor"/></svg>
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6.6 10.8a13.6 13.6 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1-.25c1.1.36 2.3.56 3.5.56a1 1 0 0 1 1 1V20a1 1 0 0 1-1 1C10.9 21 3 13.1 3 3.5a1 1 0 0 1 1-1H7.5a1 1 0 0 1 1 1c0 1.2.2 2.4.56 3.5a1 1 0 0 1-.25 1L6.6 10.8Z" fill="currentColor"/></svg>
         Start Call
       </button>
+      <p class="start-call-caption">You'll have up to ${s.duration_minutes} minutes</p>
     `;
-    card.querySelector('.start-call-btn').addEventListener('click', () => startCall(s));
-    list.appendChild(card);
+    block.querySelector('.start-call-btn').addEventListener('click', () => startCall(s));
+    list.appendChild(block);
   });
 }
 
@@ -104,16 +120,10 @@ function stopAllTicking() {
   stopRecordingTicking();
 }
 
+// Only kept in state for the post-call "View Transcript" modal — the live
+// call view intentionally has no inline transcript panel.
 function addTranscriptLine(speaker, text) {
   state.transcriptLog.push({ speaker, text });
-
-  const wrap = el('transcript');
-  const div = document.createElement('div');
-  div.className = `line ${speaker}`;
-  const label = speaker === 'customer' ? 'Customer' : 'You';
-  div.innerHTML = `<span class="speaker">${label}</span>${escapeHtml(text)}`;
-  wrap.appendChild(div);
-  wrap.scrollTop = wrap.scrollHeight;
 }
 
 function escapeHtml(text) {
@@ -152,8 +162,7 @@ async function startCall(scenario) {
 
   showView('view-call');
   el('call-scenario-name').textContent = `${scenario.area} — ${scenario.scenario_id}`;
-  el('call-scenario-meta').textContent = `${scenario.process_name} · Difficulty: ${scenario.difficulty}`;
-  el('transcript').innerHTML = '';
+  el('call-scenario-meta').textContent = scenario.difficulty;
   setCallState('connecting', 'Connecting…', 'Setting up your call…');
   setTalkEnabled(false);
 
@@ -381,11 +390,19 @@ function showEvaluation(result) {
   el('eval-recommendation').textContent = result.recommendation;
 
   const categoryIcons = {
-    'Process & KB': '<svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M9 3h6l1 3h3v3l-3 1v8a1 1 0 0 1-1 1H8a1 1 0 0 1-1-1v-8l-3-1V6h3l1-3Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>',
-    'Communication': '<svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M4 5h16v10H8l-4 4V5Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>',
-    'Fluency': '<svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M4 12h2l2-6 3 12 2-8 2 4h5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>',
-    'Pronunciation': '<svg width="15" height="15" viewBox="0 0 24 24" fill="none"><rect x="9" y="3" width="6" height="11" rx="3" fill="currentColor"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>',
-    'Call Management': '<svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M21 16.4v2.3a1.3 1.3 0 0 1-1.4 1.3 17.6 17.6 0 0 1-7.6-2.7 17.4 17.4 0 0 1-5.3-5.3A17.6 17.6 0 0 1 4 4.4 1.3 1.3 0 0 1 5.3 3h2.3a1.3 1.3 0 0 1 1.3 1.1c.1.9.3 1.8.6 2.6a1.3 1.3 0 0 1-.3 1.4L8 9.3a14 14 0 0 0 5.3 5.3l1.2-1.2a1.3 1.3 0 0 1 1.4-.3c.8.3 1.7.5 2.6.6a1.3 1.3 0 0 1 1.1 1.3Z" fill="currentColor"/></svg>',
+    'Process & KB': '<svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M9 3h6l1 3h3v3l-3 1v8a1 1 0 0 1-1 1H8a1 1 0 0 1-1-1v-8l-3-1V6h3l1-3Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>',
+    'Communication': '<svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M4 5h16v10H8l-4 4V5Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>',
+    'Fluency': '<svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M4 12h2l2-6 3 12 2-8 2 4h5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+    'Pronunciation': '<svg width="16" height="16" viewBox="0 0 24 24" fill="none"><rect x="9" y="3" width="6" height="11" rx="3" fill="currentColor"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>',
+    'Call Management': '<svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M21 16.4v2.3a1.3 1.3 0 0 1-1.4 1.3 17.6 17.6 0 0 1-7.6-2.7 17.4 17.4 0 0 1-5.3-5.3A17.6 17.6 0 0 1 4 4.4 1.3 1.3 0 0 1 5.3 3h2.3a1.3 1.3 0 0 1 1.3 1.1c.1.9.3 1.8.6 2.6a1.3 1.3 0 0 1-.3 1.4L8 9.3a14 14 0 0 0 5.3 5.3l1.2-1.2a1.3 1.3 0 0 1 1.4-.3c.8.3 1.7.5 2.6.6a1.3 1.3 0 0 1 1.1 1.3Z" fill="currentColor"/></svg>',
+  };
+
+  const categoryClasses = {
+    'Process & KB': 'cat-process',
+    'Communication': 'cat-communication',
+    'Fluency': 'cat-fluency',
+    'Pronunciation': 'cat-pronunciation',
+    'Call Management': 'cat-callmgmt',
   };
 
   const categories = [
@@ -400,7 +417,7 @@ function showEvaluation(result) {
   categories.forEach(([label, value, max]) => {
     const pct = Math.round((value / max) * 100);
     const card = document.createElement('div');
-    card.className = 'category-card';
+    card.className = `category-card ${categoryClasses[label] || ''}`;
     card.innerHTML = `
       <div class="category-card-top">
         <span class="category-icon">${categoryIcons[label] || ''}</span>
@@ -505,6 +522,7 @@ el('talk-btn').addEventListener('touchend', (e) => { e.preventDefault(); endReco
 
 el('time-skip-btn').addEventListener('click', requestTimeSkip);
 el('end-call-btn').addEventListener('click', endCall);
+el('leave-call-btn').addEventListener('click', endCall);
 el('retry-btn').addEventListener('click', practiceAgain);
 el('retry-btn-header').addEventListener('click', practiceAgain);
 el('back-btn').addEventListener('click', resetToPicker);

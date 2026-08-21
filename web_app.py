@@ -34,9 +34,8 @@ from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 from openai import AzureOpenAI
 
-load_dotenv()
-
 BASE_DIR = Path(__file__).resolve().parent
+load_dotenv(BASE_DIR / ".env")
 STATIC_DIR = BASE_DIR / "static"
 SCENARIOS_DIR = BASE_DIR / "scenarios"
 
@@ -679,6 +678,8 @@ def list_scenarios() -> list[dict]:
                 "difficulty": s["difficulty"],
                 "duration_minutes": s["duration_minutes"],
                 "time_skip_label": time_skip["button_label"] if time_skip else None,
+                "overview": s.get("case", {}).get("summary", ""),
+                "goal": s.get("case", {}).get("customer_goal", ""),
             }
         )
     return result
