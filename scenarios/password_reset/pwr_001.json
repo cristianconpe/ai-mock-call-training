@@ -1,0 +1,146 @@
+{
+  "scenario_id": "PWR-001",
+  "area": "Password Reset",
+  "process_name": "M365 TS – Password Reset – Single Global Admin (DNS TXT Verification)",
+  "difficulty": "hard",
+  "duration_minutes": 8,
+
+  "customer": {
+    "name": "Casey Nolan",
+    "role_claimed": "Global Admin",
+    "persona": "non_technical_small_business_owner",
+    "attitude": "polite_but_increasingly_anxious",
+    "opening_line": "Hi — I'm locked out of my Microsoft 365 account, I can't remember my password. I'm the only admin for my company so this is kind of a big deal right now.",
+    "opening_situation": "Casey is the sole Global Admin for a small business tenant (domain nolanandco.com) and has forgotten their password. There is no phone number and no alternate email on file for the account — only the UPN — so none of the usual quick verification shortcuts are available, and Casey has never dealt with anything like this before.",
+    "hidden_facts": [
+      "Casey is the only Global Admin on this tenant — there is no one else who could approve a reset.",
+      "There is no phone number and no alternate email on file for this account — only the UPN, casey@nolanandco.com.",
+      "A message was already sent earlier to the domain's Technical Contact asking them to approve the reset, but it has gone unanswered.",
+      "Casey personally manages the company's domain and has an active login to the domain registrar's website (where DNS records are managed), but has never touched a DNS or TXT record before and won't know what that means unless it's explained in plain language.",
+      "Casey is on this same call for the whole process — there is no need to schedule a callback or ask for a different number to reach them at.",
+      "If given a password over the phone, Casey will want it repeated or spelled slowly to make sure they wrote it down correctly.",
+      "There is no prior open case for this tenant this week."
+    ],
+    "pushback_lines": [
+      "Can't you just email me a reset link? That's how this usually works, isn't it?",
+      "I don't really know what a TXT record is — is this going to take a long time?",
+      "Is there a simpler way to do this? I've got a business to run.",
+      "What if I just give you my personal Gmail — can't you send it there instead?"
+    ]
+  },
+
+  "case": {
+    "summary": "A sole Global Admin has forgotten their password and cannot sign in. No phone number or alternate email is on file, so the engineer must fall back through the standard POV hierarchy, ending in DNS TXT record verification, before the password can be delivered.",
+    "customer_goal": "Get their password reset so they can sign back into their only admin account today.",
+    "background": "This tenant has a single Global Admin (the caller) and no other approver. No phone number or alternate email is associated with the account — only the UPN. An earlier attempt to reach the domain's Technical Contact for approval went unanswered. With every higher-priority verification channel unavailable or exhausted, DNS TXT record verification at the domain registrar is the only remaining valid POV."
+  },
+
+  "knowledge_base": {
+    "source_documents": ["MFA Handbook Key Concepts.docx", "Flujo del Caso.docx"],
+    "pov_hierarchy": [
+      "Another GA approval (phone or email)",
+      "Government-issued ID (only in permitted scenarios)",
+      "Call to primary phone",
+      "Call to mobile phone",
+      "Call to company profile phone",
+      "Email to UPN / alternate email",
+      "Authorized Administrator approval",
+      "Technical Contact approval",
+      "DNS TXT record"
+    ],
+    "required_steps": [
+      {
+        "id": "entitlement",
+        "text": "Ask for and receive the requester's identifying details before taking any action — here that is limited to full name and UPN, the only information on file for this account (no phone number or alternate email exists to cross-check against). This is satisfied by asking for and receiving that info and it matching what's on file; the engineer does not need to narrate the tenant lookup out loud."
+      },
+      {
+        "id": "scope_check",
+        "text": "Establish that this is a full password reset need — the customer cannot sign in because they've forgotten/lost their password — not an MFA-only issue. Satisfied whether the engineer asks directly or the customer volunteers it."
+      },
+      {
+        "id": "tenant_review",
+        "text": "Identify the tenant-level context that changes the process: this tenant has only one Global Admin (the caller, so no second GA can approve), and the account has no phone number and no alternate email on file — only a UPN."
+      },
+      {
+        "id": "verification_type",
+        "text": "Correctly determine that, because no other GA exists to approve and no phone or alternate email is on file, the engineer must work through the standard POV hierarchy's remaining channels in order rather than defaulting to a phone call or email that this account doesn't have, and rather than accepting any substitute contact method the customer offers instead (e.g. a personal email)."
+      },
+      {
+        "id": "pov_order",
+        "text": "Rule out the fallback verification channels in the correct hierarchy order without skipping any: (a) call to primary/mobile phone — none on file; (b) verification email to the UPN — attempted, but bounces back and never reaches the customer since no mailbox is associated with it; (c) call to company profile phone — none on file; (d) Technical Contact approval — already attempted before this call, no response received. Only once all of these are ruled out does DNS TXT record verification become the valid path. This is satisfied by the engineer working through and acknowledging these in order (they do not need to literally attempt each one live on the call — checking tenant records and explaining to the customer why phone/email aren't options is sufficient), never by jumping straight to DNS TXT without addressing them."
+      },
+      {
+        "id": "dns_txt_instructions",
+        "text": "Give the customer clear, correct, complete instructions for adding the required DNS TXT record at their domain registrar/DNS host, including the exact record value they must publish — today's exact date — to prove domain ownership. Explained in plain, non-technical language appropriate for a customer who has never edited a DNS record before."
+      },
+      {
+        "id": "dns_txt_confirmation",
+        "text": "Before proceeding to deliver the password, confirm the TXT record was actually published correctly — the engineer checks and confirms it, rather than simply taking the customer's word that they added it or skipping the check altogether."
+      },
+      {
+        "id": "password_delivery",
+        "text": "Once the DNS TXT POV is confirmed, deliver the (temporary/reset) password to the customer verbally on this call by spelling it out clearly, character by character."
+      },
+      {
+        "id": "closure",
+        "text": "After the password is delivered, confirm with the customer that they were able to successfully sign in with it, then let them know they'll be transferred to a short feedback survey before ending the call. Both the sign-in confirmation and the survey mention are required before the call can end. Do not disclose to the customer which internal verification attempts were rejected or the reasoning behind each hierarchy step — that stays internal."
+      }
+    ],
+    "forbidden_actions": [
+      {
+        "id": "verbal_only_entitlement",
+        "text": "Never grant entitlement or treat identity as confirmed based on the customer's verbal claim alone — it must be checked against tenant/domain records.",
+        "severity": "critical"
+      },
+      {
+        "id": "accept_unverified_contact",
+        "text": "Never accept a phone number or email that isn't already on file (e.g. a personal email or a new number the customer offers) as a substitute verification channel, and never claim or imply that a channel (primary phone, company phone, alternate email) is available when tenant records show it is not.",
+        "severity": "critical"
+      },
+      {
+        "id": "skip_pov_hierarchy",
+        "text": "Never jump straight to the DNS TXT record without first working through and ruling out the higher-priority channels (phone, email to UPN, company phone, Technical Contact) in order, even though each of them turns out to be unavailable or unresponsive.",
+        "severity": "critical"
+      },
+      {
+        "id": "skip_dns_verification",
+        "text": "Never deliver the password before actually confirming the DNS TXT record was published and verified — taking the customer's word for it without checking is not sufficient.",
+        "severity": "critical"
+      },
+      {
+        "id": "insecure_password_disclosure",
+        "text": "Never deliver the password by any means other than spelling it verbally on this call (e.g. never offer to email or text it instead).",
+        "severity": "major"
+      }
+    ],
+    "escalation_rules": [
+      {
+        "id": "dns_unavailable",
+        "text": "If the customer cannot access or does not control their domain's DNS records (e.g. a third party manages the registrar), escalate to a TA — the case cannot proceed without a valid POV."
+      },
+      {
+        "id": "tc_unresponsive",
+        "text": "A Technical Contact who has not responded does not block progress once DNS TXT verification succeeds — proceed via DNS TXT rather than continuing to wait on the TC."
+      }
+    ]
+  },
+
+  "evaluation": {
+    "critical_errors": [
+      "verbal_only_entitlement",
+      "accept_unverified_contact",
+      "skip_pov_hierarchy",
+      "skip_dns_verification"
+    ],
+    "expected_behaviors": [
+      "Trainee correctly identifies that no other GA, phone number, or alternate email is available on this account before proposing a path forward.",
+      "Trainee works through the POV hierarchy in order (phone, email to UPN, company phone, Technical Contact) and explains why each is unavailable, rather than jumping straight to DNS TXT.",
+      "Trainee never accepts a personal/unverified contact method the customer offers as a shortcut.",
+      "Trainee gives clear, plain-language instructions for adding the DNS TXT record, appropriate for a non-technical customer.",
+      "Trainee actually confirms the DNS TXT record was published before delivering the password.",
+      "Trainee delivers the password only by spelling it out verbally on the call.",
+      "Trainee stays patient and reassuring while the customer is anxious or confused, without becoming condescending.",
+      "Trainee confirms the customer can successfully sign in, and mentions the feedback survey transfer, before ending the call."
+    ]
+  }
+}
